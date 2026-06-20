@@ -1,0 +1,27 @@
+{
+  "name": "playwright-practice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright study project running in Docker",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui --host 0.0.0.0 --port 9323",
+    "codegen": "playwright codegen http://127.0.0.1:3000",
+    "report": "playwright show-report"
+  },
+  "dependencies": {
+    "next": "^15.3.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.1",
+    "@types/node": "^24.0.3",
+    "@types/react": "^19.1.8",
+    "typescript": "^5.8.3"
+  }
+}
