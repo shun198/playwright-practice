@@ -13,9 +13,6 @@
         "--workers=1",
         "--headed"
       ],
-      "env": {
-        "PWDEBUG": "1"
-      },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     }
