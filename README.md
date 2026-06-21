@@ -62,10 +62,17 @@ npm run report
 7. 利用規約の同意チェックが未選択だと送信されない
 8. お問い合わせ種別（ラジオボタン）が未選択だと送信されない
 
+## 追加したテスト（`tests/error.spec.ts`）
+
+1. エラーメッセージが表示される
+2. エラーページからフォームページに戻れる
+
 ## プロジェクト構成（主要ファイル）
 
 - `app/page.tsx`: フォーム画面
 - `app/thanks/page.tsx`: ページ遷移確認用のサンクス画面
+- `app/error/page.tsx`: エラー画面
 - `tests/form.spec.ts`: フォームの E2E テスト
+- `tests/error.spec.ts`: エラー画面の E2E テスト
 - `playwright.config.js`: Playwright 設定（`webServer` 含む）
 

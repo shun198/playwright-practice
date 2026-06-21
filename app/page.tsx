@@ -26,6 +26,9 @@ export default function Page() {
         ページ遷移テスト用に{" "}
         <Link href="/thanks">サンクスページへ</Link>
       </p>
+      <p>
+        エラー画面テスト用に <Link href="/error">エラーページへ</Link>
+      </p>
 
       <form onSubmit={handleSubmit} aria-label="contact form">
         <div style={{ marginBottom: 12 }}>
