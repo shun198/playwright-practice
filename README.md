@@ -51,6 +51,18 @@ npm run test:ui
 npm run report
 ```
 
+## 失敗サンプルテスト（`tests/failing.spec.ts`）
+
+意図的に失敗させる学習用テストです。失敗時の証跡（スクリーンショット / 動画 / 注釈付き画像 / APIエラーログ）を確認できます。
+
+```bash
+npx playwright test tests/failing.spec.ts
+```
+
+- `tests/helpers/annotated-screenshot.ts`: 赤枠とコメントを重ねた注釈付きスクリーンショットを添付
+- `tests/helpers/api-error-collector.ts`: `/api/*` の 4xx/5xx と request failed を JSON 添付
+- 通常の CI で使う場合は、`failing.spec.ts` を除外して運用する想定です
+
 ## 現在あるテスト（`tests/form.spec.ts`）
 
 1. サンクスページへ遷移できる
@@ -82,5 +94,8 @@ npm run report
 - `tests/form.spec.ts`: フォームの E2E テスト
 - `tests/error.spec.ts`: エラー画面の E2E テスト
 - `tests/api-contact.spec.ts`: API ステータス検証テスト
+- `tests/failing.spec.ts`: 失敗時証跡のサンプルテスト（意図的に失敗）
+- `tests/helpers/annotated-screenshot.ts`: 注釈付きスクリーンショットヘルパー
+- `tests/helpers/api-error-collector.ts`: APIエラー収集ヘルパー
 - `playwright.config.js`: Playwright 設定（`webServer` 含む）
 
