@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import { annotateAndAttachScreenshot } from "./helpers/annotated-screenshot";
+import { createApiErrorCollector } from "./helpers/api-error-collector";
 
 async function expectSuccessMessageToFail(page: Page) {
   // 実際は表示されないメッセージをあえて期待してテストを失敗させる
@@ -66,5 +67,47 @@ test.describe("失敗サンプル", () => {
     });
 
     await expectSuccessMessageToFail(page);
+  });
+
+  test("APIエラーを収集して添付した上で意図的に失敗する", async ({ page }, testInfo) => {
+    const collector = createApiErrorCollector(page, { endpointPattern: /\/api\/contact/ });
+    await page.goto("/");
+
+    await page.route("**/api/contact", async (route) => {
+      await route.fulfill({
+        status: 500,
+        contentType: "application/json",
+        body: JSON.stringify({
+          code: "CONTACT_SAVE_FAILED",
+          message: "Database is temporarily unavailable"
+        })
+      });
+    });
+
+    await page.evaluate(async () => {
+      await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          name: "田中太郎",
+          email: "taro@example.com",
+          message: "APIエラー検証"
+        })
+      });
+    });
+
+    await annotateAndAttachScreenshot(page, testInfo, {
+      targetSelectors: [],
+      comment: "API /api/contact が 500 で失敗しています",
+      attachmentName: "annotated-api-error",
+      fileName: "annotated-api-error.png"
+    });
+    await collector.attach(testInfo, {
+      attachmentName: "api-errors",
+      fileName: "api-errors.json"
+    });
+    collector.dispose();
+
+    await expect(page.getByText("API成功")).toBeVisible();
   });
 });

@@ -67,12 +67,20 @@ npm run report
 1. エラーメッセージが表示される
 2. エラーページからフォームページに戻れる
 
+## API テスト（`tests/api-contact.spec.ts`）
+
+1. 必須項目不足で `400` を返す
+2. 不正メール形式で `400` を返す
+3. サーバーエラー時に `500` を返す
+
 ## プロジェクト構成（主要ファイル）
 
 - `app/page.tsx`: フォーム画面
 - `app/thanks/page.tsx`: ページ遷移確認用のサンクス画面
 - `app/error/page.tsx`: エラー画面
+- `app/api/contact/route.ts`: 問い合わせAPI（400/500検証用）
 - `tests/form.spec.ts`: フォームの E2E テスト
 - `tests/error.spec.ts`: エラー画面の E2E テスト
+- `tests/api-contact.spec.ts`: API ステータス検証テスト
 - `playwright.config.js`: Playwright 設定（`webServer` 含む）
 
