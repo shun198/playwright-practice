@@ -6,27 +6,27 @@
 ## 前提
 
 - Node.js 20 以上
-- npm
+- pnpm `11.10.0`（`package.json` の `packageManager` に合わせる）
 
 ## セットアップ (ローカル)
 
 リポジトリ root で実行します。
 
 ```bash
-npm install
-npx playwright install --with-deps chromium
+pnpm install
+pnpm exec playwright install --with-deps chromium
 ```
 
 ## テスト実行 (ローカル)
 
 ```bash
-npm run test
+pnpm test
 ```
 
 特定ファイルだけ実行する場合:
 
 ```bash
-npx playwright test tests/form.spec.ts
+pnpm exec playwright test tests/form.spec.ts
 ```
 
 上記は `playwright.config.js` の `webServer` 設定により、以下を自動で行います。
@@ -40,13 +40,13 @@ npx playwright test tests/form.spec.ts
 ### Headed 実行
 
 ```bash
-npm run test:headed
+pnpm test:headed
 ```
 
 ### UI モード
 
 ```bash
-npm run test:ui
+pnpm test:ui
 ```
 
 実行後、`http://localhost:9323` で UI を確認できます。
@@ -54,7 +54,7 @@ npm run test:ui
 ### レポート表示
 
 ```bash
-npm run report
+pnpm report
 ```
 
 ## Playwright でできるテスト (具体例)
@@ -79,8 +79,8 @@ npm run report
 
 ## デバッグ実行
 
-- `npm run test -- --debug`
-- `npx playwright test tests/form.spec.ts --debug`
+- `pnpm test -- --debug`
+- `pnpm exec playwright test tests/form.spec.ts --debug`
 - `.vscode/launch.json` の `Playwright: Debug all tests` を使う
 
 ## GitHub Pages にテスト結果を公開
@@ -111,5 +111,5 @@ npm run report
 1. `app/page.tsx` に入力項目やバリデーションを追加する
 2. 正常系だけでなく異常系（未入力・形式不正）もテストにする
 3. APIモック (`page.route`) のケースを追加する
-4. 必要なら `npm run codegen` でセレクタを確認する
+4. 必要なら `pnpm codegen` でセレクタを確認する
 5. 失敗時は `test-results/` と `playwright-report/` を見る
