@@ -55,6 +55,24 @@ test.describe("/api/contact", () => {
     });
   });
 
+  test("サポートのお問い合わせを受け付ける", async ({ request }) => {
+    const response = await request.post("/api/contact", {
+      data: {
+        name: "田中太郎",
+        email: "taro@example.com",
+        message: "サポートへのお問い合わせ",
+        contactType: "support",
+        agree: true
+      }
+    });
+
+    expect(response.status()).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      code: "OK",
+      message: "お問い合わせを受け付けました。"
+    });
+  });
+
   test("不正なお問い合わせ種別で 400 を返す", async ({ request }) => {
     const response = await request.post("/api/contact", {
       data: {

@@ -155,18 +155,26 @@ test.describe("お問い合わせフォーム", () => {
     await expect(page.getByRole("status")).toHaveCount(0);
   });
 
-  test("連続送信すると最新の名前でメッセージが更新される", async ({ page }) => {
+  test("連続送信すると API に 2 回リクエストする", async ({ page }) => {
+    let requestCount = 0;
+    page.on("request", (request) => {
+      if (request.url().includes("/api/contact") && request.method() === "POST") {
+        requestCount += 1;
+      }
+    });
     await page.getByLabel("名前").fill("田中太郎");
     await page.getByLabel("メールアドレス").fill("taro@example.com");
     await page.getByLabel("メッセージ").fill("1回目");
     await page.getByLabel("一般").check();
     await page.getByLabel("利用規約に同意する").check();
     await page.getByRole("button", { name: "送信" }).click();
+    await expect.poll(() => requestCount).toBe(1);
     await expect(page.getByRole("status")).toHaveText("お問い合わせを受け付けました。");
 
     await page.getByLabel("名前").fill("佐藤花子");
     await page.getByLabel("メッセージ").fill("2回目");
     await page.getByRole("button", { name: "送信" }).click();
+    await expect.poll(() => requestCount).toBe(2);
     await expect(page.getByRole("status")).toHaveText("お問い合わせを受け付けました。");
   });
 
