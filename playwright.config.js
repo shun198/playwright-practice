@@ -9,7 +9,7 @@ module.exports = defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [["list"], ["html", { open: "never" }]],
   webServer: {
-    command: "npm run dev -- --hostname 0.0.0.0 --port 3000",
+    command: "pnpm dev --hostname 0.0.0.0 --port 3000",
     url: "http://127.0.0.1:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120000

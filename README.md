@@ -5,13 +5,13 @@ Next.js のシンプルな問い合わせフォームを対象に、Playwright �
 ## 前提
 
 - Node.js `24.14.0`（`package.json` の `engines` / `volta` に合わせる）
-- npm
+- pnpm `11.10.0`（`package.json` の `packageManager` に合わせる）
 
 ## セットアップ
 
 ```bash
-npm install
-npx playwright install --with-deps chromium
+pnpm install
+pnpm exec playwright install --with-deps chromium
 ```
 
 ## テスト実行方法
@@ -19,25 +19,25 @@ npx playwright install --with-deps chromium
 ### 全テストを実行
 
 ```bash
-npm run test
+pnpm test
 ```
 
 ### 特定ファイルのみ実行
 
 ```bash
-npx playwright test tests/form.spec.ts
+pnpm exec playwright test tests/form.spec.ts
 ```
 
 ### Headed 実行（ブラウザを表示）
 
 ```bash
-npm run test:headed
+pnpm test:headed
 ```
 
 ### UI Mode で実行
 
 ```bash
-npm run test:ui
+pnpm test:ui
 ```
 
 - UI は `http://localhost:9323` で開けます
@@ -48,7 +48,7 @@ npm run test:ui
 ### HTML レポート表示
 
 ```bash
-npm run report
+pnpm report
 ```
 
 ## 失敗サンプルテスト（`tests/failing.spec.ts`）
@@ -56,7 +56,7 @@ npm run report
 意図的に失敗させる学習用テストです。失敗時の証跡（スクリーンショット / 動画 / 注釈付き画像 / APIエラーログ）を確認できます。
 
 ```bash
-npx playwright test tests/failing.spec.ts
+pnpm exec playwright test tests/failing.spec.ts
 ```
 
 - `tests/helpers/annotated-screenshot.ts`: 赤枠とコメントを重ねた注釈付きスクリーンショットを添付
@@ -98,4 +98,3 @@ npx playwright test tests/failing.spec.ts
 - `tests/helpers/annotated-screenshot.ts`: 注釈付きスクリーンショットヘルパー
 - `tests/helpers/api-error-collector.ts`: APIエラー収集ヘルパー
 - `playwright.config.js`: Playwright 設定（`webServer` 含む）
-
