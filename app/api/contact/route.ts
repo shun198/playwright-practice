@@ -4,6 +4,8 @@ type ContactPayload = {
   name?: unknown;
   email?: unknown;
   message?: unknown;
+  contactType?: unknown;
+  agree?: unknown;
 };
 
 function isNonEmptyString(value: unknown): value is string {
@@ -14,12 +16,18 @@ function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+function isContactType(value: unknown): value is "general" | "support" {
+  return value === "general" || value === "support";
+}
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as ContactPayload;
     const name = body.name;
     const email = body.email;
     const message = body.message;
+    const contactType = body.contactType;
+    const agree = body.agree;
 
     if (!isNonEmptyString(name) || !isNonEmptyString(email) || !isNonEmptyString(message)) {
       return NextResponse.json(
@@ -36,6 +44,26 @@ export async function POST(request: Request) {
         {
           code: "VALIDATION_ERROR",
           message: "email の形式が不正です。"
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!isContactType(contactType)) {
+      return NextResponse.json(
+        {
+          code: "VALIDATION_ERROR",
+          message: "contactType は general または support を指定してください。"
+        },
+        { status: 400 }
+      );
+    }
+
+    if (agree !== true) {
+      return NextResponse.json(
+        {
+          code: "VALIDATION_ERROR",
+          message: "利用規約への同意が必要です。"
         },
         { status: 400 }
       );
