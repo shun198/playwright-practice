@@ -1,6 +1,6 @@
 # playwright-practice
 
-Next.js のシンプルな問い合わせフォームを対象に、Playwright で E2E テストを学ぶためのリポジトリです。
+Next.js の問い合わせフォーム、ログイン画面、会員ホームを対象に、Playwright で E2E テストを学ぶためのリポジトリです。
 
 ## 前提
 
@@ -65,7 +65,7 @@ pnpm exec playwright test tests/failing.spec.ts
 
 ## 現在あるテスト（`tests/form.spec.ts`）
 
-1. サンクスページへ遷移できる
+1. ログイン画面へ遷移できる
 2. 初期表示では完了メッセージが出ていない
 3. フォーム送信後に完了メッセージが表示される
 4. 必須項目（名前）が空だと送信されない
@@ -73,6 +73,14 @@ pnpm exec playwright test tests/failing.spec.ts
 6. 連続送信すると最新の名前でメッセージが更新される
 7. 利用規約の同意チェックが未選択だと送信されない
 8. お問い合わせ種別（ラジオボタン）が未選択だと送信されない
+
+## ログイン導線のテスト（`tests/login.spec.ts`）
+
+1. 有効な認証情報で会員ホームへ遷移できる
+2. 無効な認証情報ではエラーを表示してログイン画面に留まる
+
+ログイン画面のテスト用アカウントは `member@example.com` / `playwright` です。ログインAPIとHTTP-only Cookieを使った認証フローの学習用実装であり、実運用の認証には使用しないでください。
+セッションの署名鍵は単一プロセスのメモリ上で管理するため、サーバー再起動時にログイン状態は失効します。
 
 ## 追加したテスト（`tests/error.spec.ts`）
 
@@ -85,15 +93,23 @@ pnpm exec playwright test tests/failing.spec.ts
 2. 不正メール形式で `400` を返す
 3. サーバーエラー時に `500` を返す
 
+## ログインAPIテスト（`tests/api-login.spec.ts`）
+
+1. 有効な認証情報でセッションCookieを発行する
+2. 無効な認証情報では `401` を返し、セッションCookieを発行しない
+
 ## プロジェクト構成（主要ファイル）
 
 - `app/page.tsx`: フォーム画面
-- `app/thanks/page.tsx`: ページ遷移確認用のサンクス画面
+- `app/login/page.tsx`: ログイン画面
+- `app/member/home/page.tsx`: ログイン後の会員ホーム
 - `app/error/page.tsx`: エラー画面
 - `app/api/contact/route.ts`: 問い合わせAPI（400/500検証用）
 - `tests/form.spec.ts`: フォームの E2E テスト
+- `tests/login.spec.ts`: ログイン導線の E2E テスト
 - `tests/error.spec.ts`: エラー画面の E2E テスト
 - `tests/api-contact.spec.ts`: API ステータス検証テスト
+- `tests/api-login.spec.ts`: ログインAPIの認証・Cookie検証テスト
 - `tests/failing.spec.ts`: 失敗時証跡のサンプルテスト（意図的に失敗）
 - `tests/helpers/annotated-screenshot.ts`: 注釈付きスクリーンショットヘルパー
 - `tests/helpers/api-error-collector.ts`: APIエラー収集ヘルパー
