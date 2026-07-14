@@ -9,13 +9,45 @@ type FormSubmitEvent = Parameters<
 >[0];
 
 export default function Page() {
-  const [submittedName, setSubmittedName] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event: FormSubmitEvent) => {
+  const handleSubmit = async (event: FormSubmitEvent) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const name = formData.get("name");
-    setSubmittedName(typeof name === "string" ? name : "");
+    setSuccessMessage("");
+    setErrorMessage("");
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          name: formData.get("name"),
+          email: formData.get("email"),
+          message: formData.get("message")
+        })
+      });
+      const body = (await response.json()) as { message?: unknown };
+
+      if (!response.ok) {
+        throw new Error(
+          typeof body.message === "string" ? body.message : "お問い合わせの送信に失敗しました。"
+        );
+      }
+
+      setSuccessMessage(
+        typeof body.message === "string" ? body.message : "お問い合わせを受け付けました。"
+      );
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "お問い合わせの送信に失敗しました。"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -30,7 +62,7 @@ export default function Page() {
         エラー画面テスト用に <Link href="/error">エラーページへ</Link>
       </p>
 
-      <form onSubmit={handleSubmit} aria-label="contact form">
+      <form onSubmit={handleSubmit} aria-label="contact form" aria-busy={isSubmitting}>
         <div style={{ marginBottom: 12 }}>
           <label htmlFor="name">名前</label>
           <br />
@@ -74,14 +106,17 @@ export default function Page() {
           </label>
         </div>
 
-        <button type="submit">送信</button>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "送信中..." : "送信"}
+        </button>
       </form>
 
-      {submittedName ? (
+      {successMessage ? (
         <p role="status" style={{ marginTop: 20 }}>
-          {submittedName}さん、お問い合わせありがとうございます。
+          {successMessage}
         </p>
       ) : null}
+      {errorMessage ? <p role="alert">{errorMessage}</p> : null}
     </main>
   );
 }
