@@ -28,7 +28,15 @@ test.describe("お問い合わせフォーム", () => {
     await page.getByLabel("利用規約に同意する").check();
     await page.getByRole("button", { name: "送信" }).click();
 
-    expect((await responsePromise).status()).toBe(200);
+    const response = await responsePromise;
+    expect(response.status()).toBe(200);
+    expect(response.request().postDataJSON()).toEqual({
+      name: "田中太郎",
+      email: "taro@example.com",
+      message: "Playwright の練習中です。",
+      contactType: "general",
+      agree: true
+    });
     await expect(page.getByRole("status")).toHaveText("お問い合わせを受け付けました。");
   });
 
@@ -52,7 +60,9 @@ test.describe("お問い合わせフォーム", () => {
     await page.getByRole("button", { name: "送信" }).click();
 
     expect((await responsePromise).status()).toBe(500);
-    await expect(page.getByText("サーバー内部でエラーが発生しました。")).toBeVisible();
+    await expect(page.getByRole("alert", { name: "送信エラー" })).toHaveText(
+      "サーバー内部でエラーが発生しました。"
+    );
     await expect(page.getByRole("status")).toHaveCount(0);
   });
 
@@ -76,8 +86,44 @@ test.describe("お問い合わせフォーム", () => {
     await page.getByRole("button", { name: "送信" }).click();
 
     expect((await responsePromise).status()).toBe(400);
-    await expect(page.getByText("サーバー側のバリデーションに失敗しました。")).toBeVisible();
+    await expect(page.getByRole("alert", { name: "送信エラー" })).toHaveText(
+      "サーバー側のバリデーションに失敗しました。"
+    );
     await expect(page.getByRole("status")).toHaveCount(0);
+  });
+
+  test("送信中は二重送信できない", async ({ page }) => {
+    let requestCount = 0;
+    let releaseResponse: () => void;
+    const responseGate = new Promise<void>((resolve) => {
+      releaseResponse = resolve;
+    });
+
+    await page.route("**/api/contact", async (route) => {
+      requestCount += 1;
+      await responseGate;
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({ code: "OK", message: "お問い合わせを受け付けました。" })
+      });
+    });
+    await page.getByLabel("名前").fill("田中太郎");
+    await page.getByLabel("メールアドレス").fill("taro@example.com");
+    await page.getByLabel("メッセージ").fill("送信中状態のテスト");
+    await page.getByLabel("一般").check();
+    await page.getByLabel("利用規約に同意する").check();
+    await page.getByRole("button", { name: "送信" }).click();
+
+    await expect(page.getByRole("button", { name: "送信中..." })).toBeDisabled();
+    await expect(page.getByRole("form", { name: "contact form" })).toHaveAttribute(
+      "aria-busy",
+      "true"
+    );
+    await expect.poll(() => requestCount).toBe(1);
+
+    releaseResponse!();
+
+    await expect(page.getByRole("status")).toHaveText("お問い合わせを受け付けました。");
   });
 
   test("必須項目が空だと送信されない", async ({ page }) => {

@@ -27,10 +27,12 @@ export default function Page() {
         body: JSON.stringify({
           name: formData.get("name"),
           email: formData.get("email"),
-          message: formData.get("message")
+          message: formData.get("message"),
+          contactType: formData.get("contactType"),
+          agree: formData.get("agree") === "on"
         })
       });
-      const body = (await response.json()) as { message?: unknown };
+      const body = (await response.json().catch(() => ({}))) as { message?: unknown };
 
       if (!response.ok) {
         throw new Error(
@@ -116,7 +118,7 @@ export default function Page() {
           {successMessage}
         </p>
       ) : null}
-      {errorMessage ? <p role="alert">{errorMessage}</p> : null}
+      {errorMessage ? <p role="alert" aria-label="送信エラー">{errorMessage}</p> : null}
     </main>
   );
 }

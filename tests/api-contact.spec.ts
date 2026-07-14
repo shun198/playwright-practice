@@ -21,7 +21,9 @@ test.describe("/api/contact", () => {
       data: {
         name: "田中太郎",
         email: "invalid-mail",
-        message: "メール形式エラー"
+        message: "メール形式エラー",
+        contactType: "general",
+        agree: true
       }
     });
 
@@ -40,7 +42,9 @@ test.describe("/api/contact", () => {
       data: {
         name: "田中太郎",
         email: "taro@example.com",
-        message: "500 エラーを発生させる"
+        message: "500 エラーを発生させる",
+        contactType: "general",
+        agree: true
       }
     });
 
@@ -48,6 +52,42 @@ test.describe("/api/contact", () => {
     await expect(response.json()).resolves.toEqual({
       code: "INTERNAL_SERVER_ERROR",
       message: "サーバー内部でエラーが発生しました。"
+    });
+  });
+
+  test("不正なお問い合わせ種別で 400 を返す", async ({ request }) => {
+    const response = await request.post("/api/contact", {
+      data: {
+        name: "田中太郎",
+        email: "taro@example.com",
+        message: "お問い合わせ種別エラー",
+        contactType: "other",
+        agree: true
+      }
+    });
+
+    expect(response.status()).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      code: "VALIDATION_ERROR",
+      message: "contactType は general または support を指定してください。"
+    });
+  });
+
+  test("利用規約が未同意なら 400 を返す", async ({ request }) => {
+    const response = await request.post("/api/contact", {
+      data: {
+        name: "田中太郎",
+        email: "taro@example.com",
+        message: "利用規約未同意エラー",
+        contactType: "general",
+        agree: false
+      }
+    });
+
+    expect(response.status()).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      code: "VALIDATION_ERROR",
+      message: "利用規約への同意が必要です。"
     });
   });
 });
