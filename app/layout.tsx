@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Playwright Practice Form",
-  description: "Simple Next.js form for Playwright practice"
+  title: "Playwright Practice",
+  description: "Next.js pages for Playwright practice"
 };
 
 type RootLayoutProps = {

@@ -5,11 +5,11 @@ test.describe("お問い合わせフォーム", () => {
     await page.goto("/");
   });
 
-  test("サンクスページへ遷移できる", async ({ page }) => {
-    await page.getByRole("link", { name: "サンクスページへ" }).click();
+  test("ログイン画面へ遷移できる", async ({ page }) => {
+    await page.getByRole("link", { name: "ログイン画面へ" }).click();
 
-    await expect(page).toHaveURL("/thanks");
-    await expect(page.getByRole("heading", { name: "サンクスページ" })).toBeVisible();
+    await expect(page).toHaveURL("/login");
+    await expect(page.getByRole("heading", { name: "ログイン" })).toBeVisible();
   });
 
   test("初期表示では完了メッセージが出ていない", async ({ page }) => {

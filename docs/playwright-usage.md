@@ -1,7 +1,7 @@
 # Playwright usage
 
 学習用途では Docker 必須ではないため、まずローカル実行を基本にします。  
-テスト対象として、リポジトリ直下の `app/` に Next.js (TypeScript/React) のシンプルなフォームを用意しています。
+テスト対象として、リポジトリ直下の `app/` に Next.js (TypeScript/React) の問い合わせフォーム、ログイン画面、会員ホームを用意しています。
 
 ## 前提
 
@@ -103,8 +103,11 @@ pnpm report
 ## アプリ構成
 
 - `app/page.tsx`: 練習用フォーム画面
+- `app/login/page.tsx`: 認証フロー練習用のログイン画面
+- `app/member/home/page.tsx`: ログイン後の会員ホーム
 - `app/layout.tsx`: ルートレイアウト
 - `tests/form.spec.ts`: フォーム送信の E2E テスト
+- `tests/login.spec.ts`: ログインから会員ホームへのE2Eテスト
 
 ## 学習の進め方
 

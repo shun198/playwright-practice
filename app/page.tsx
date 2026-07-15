@@ -57,8 +57,7 @@ export default function Page() {
       <h1>お問い合わせフォーム</h1>
       <p>Playwright の練習用に作成したシンプルなフォームです。</p>
       <p>
-        ページ遷移テスト用に{" "}
-        <Link href="/thanks">サンクスページへ</Link>
+        認証あり画面の練習用に <Link href="/login">ログイン画面へ</Link>
       </p>
       <p>
         エラー画面テスト用に <Link href="/error">エラーページへ</Link>
