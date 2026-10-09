@@ -1,0 +1,11 @@
+# No dependency-type filter: production and development dependencies are in scope.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
